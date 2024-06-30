@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { db } from "../utils/db";
+import { db } from "../utils/db.js";
 import { ObjectId } from "mongodb";
 
 const productRouter = Router();
@@ -14,15 +14,10 @@ productRouter.get("/", async (req, res) => {
 
 productRouter.get("/:id", async (req, res) => {
   const collection = db.collection("products");
-  const productId = ObjectId(req.params.productId);
-  const newProductdata = { ...req.body };
+  const productId = new ObjectId(req.params.productId);
 
-  await collection.findOne({
-    _id: productId,
-  });
-  return res.json({
-    message: "recive products",
-  });
+  const productById = await collection.findOne({ _id: productId });
+  return res.json({ data: productById });
 });
 
 productRouter.post("/", async (req, res) => {
